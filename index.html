@@ -20,7 +20,17 @@
         <div id="autocomplete" class="autocomplete hidden"></div>
       </div>
       <button id="guessBtn">Confirmar</button>
-      <span id="attempts" class="counter">0 / 15</span>
+      
+      <div class="game-stats-live">
+        <div class="stat-box">
+          <small>TENTATIVAS</small>
+          <span id="attempts" class="counter">0 / 10</span>
+        </div>
+        <div class="stat-box accent-border">
+          <small>TEMPO</small>
+          <span id="liveTimer" class="counter timer-highlight">0m 0s</span>
+        </div>
+      </div>
     </section>
 
     <section class="legend">
