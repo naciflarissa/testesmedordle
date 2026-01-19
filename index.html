@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MEDGRUPOrdle</title>
+  <title>MEDordle</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
+  <a href="https://naciflarissa.github.io/testesmedjogos/" class="back-link">
+    <span class="arrow">⬅</span> Voltar para MEDjogos
+  </a>
 
+  <div class="app">
     <header>
-      <h1>MEDGRUPOrdle</h1>
-      <p>Adivinhe o diagnóstico do dia</p>
+      <h1 class="main-title">MEDordle</h1>
+      <p class="main-subtitle">Adivinhe o diagnóstico do dia!</p>
       <div class="date-selector">
         <label for="day-select">Jogo de: </label>
         <select id="day-select"></select>
@@ -23,7 +26,8 @@
         <input id="guessInput" type="text" placeholder="Digite um diagnóstico..." autocomplete="off">
         <div id="autocomplete" class="autocomplete hidden"></div>
       </div>
-      <button id="guessBtn">Confirmar</button>
+      
+      <button id="guessBtn">Diagnosticar</button>
       
       <div class="game-stats-live">
         <div class="stat-box">
@@ -56,10 +60,7 @@
 
     <section id="result" class="result hidden"></section>
 
-    <footer class="watermark">
-      Larissa Nacif
-    </footer>
-
+    <footer class="watermark">Larissa Nacif</footer>
   </div>
 
   <script src="cases.js"></script>

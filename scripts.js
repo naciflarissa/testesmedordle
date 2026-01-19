@@ -1,31 +1,15 @@
-const availableDates = [
-    "Sun Jan 18 2026",
-    "Mon Jan 19 2026",
-    "Tue Jan 20 2026"
-];
-
+const availableDates = ["Sun Jan 18 2026", "Mon Jan 19 2026", "Tue Jan 20 2026"];
 let currentSelectedDate = localStorage.getItem("MED_SelectedDate") || new Date().toDateString();
 if (!availableDates.includes(currentSelectedDate)) currentSelectedDate = availableDates[0];
 
-// Lógica para garantir diagnósticos diferentes nos 3 dias da apresentação
-const dateToIndexMap = {
-    "Sun Jan 18 2026": 0, // Síndrome de má absorção
-    "Mon Jan 19 2026": 1, // Pancreatite aguda
-    "Tue Jan 20 2026": 2  // Cirrose
-};
-
+const dateToIndexMap = { "Sun Jan 18 2026": 0, "Mon Jan 19 2026": 1, "Tue Jan 20 2026": 2 };
 const dailyIndex = dateToIndexMap[currentSelectedDate];
 const answer = cases[dailyIndex];
-
 const maxAttempts = 10;
-const storageKey = "MEDGRUPOrdle_" + currentSelectedDate.replace(/ /g, "_");
+const storageKey = "MEDordle_" + currentSelectedDate.replace(/ /g, "_");
 
 let state = JSON.parse(localStorage.getItem(storageKey)) || {
-  guesses: [], 
-  finished: false,
-  won: false,
-  startTime: null,
-  endTime: null
+  guesses: [], finished: false, won: false, startTime: null, endTime: null
 };
 
 const input = document.getElementById("guessInput");
@@ -39,7 +23,6 @@ const daySelect = document.getElementById("day-select");
 
 let timerInterval;
 
-// Preencher o seletor de datas
 availableDates.forEach(dateStr => {
     const opt = document.createElement("option");
     opt.value = dateStr;
@@ -76,21 +59,17 @@ function initUI() {
       const guessData = cases.find(c => c.name === guessName);
       if (guessData) renderRow(guessData);
     });
-
-    if (state.startTime && !state.finished) {
-      startTimer();
-    } else if (state.finished) {
+    if (state.startTime && !state.finished) startTimer();
+    else if (state.finished) {
       timerSpan.textContent = formatDuration(state.endTime - state.startTime);
       endGame(state.won);
     }
 }
-
 initUI();
 
 input.addEventListener("input", () => {
   const val = input.value.toLowerCase();
-  autocomplete.innerHTML = "";
-  autocomplete.classList.add("hidden");
+  autocomplete.innerHTML = ""; autocomplete.classList.add("hidden");
   if (!val) return;
   const matches = cases.filter(c => c.name.toLowerCase().includes(val) && !state.guesses.includes(c.name));
   if (matches.length > 0) {
@@ -108,28 +87,16 @@ guessBtn.onclick = () => {
   if (state.finished) return;
   const guessData = cases.find(c => c.name.toLowerCase() === input.value.toLowerCase());
   if (!guessData || state.guesses.includes(guessData.name)) return;
-
-  if (state.guesses.length === 0 && !state.startTime) {
-    state.startTime = Date.now();
-    startTimer();
-  }
-
+  if (state.guesses.length === 0 && !state.startTime) { state.startTime = Date.now(); startTimer(); }
   state.guesses.push(guessData.name);
   renderRow(guessData);
-  input.value = "";
-  updateUI();
-
+  input.value = ""; updateUI();
   if (guessData.name === answer.name) {
-    state.finished = true; 
-    state.won = true; 
-    state.endTime = Date.now();
-    clearInterval(timerInterval);
-    endGame(true);
+    state.finished = true; state.won = true; state.endTime = Date.now();
+    clearInterval(timerInterval); endGame(true);
   } else if (state.guesses.length >= maxAttempts) {
-    state.finished = true; 
-    state.endTime = Date.now();
-    clearInterval(timerInterval);
-    endGame(false);
+    state.finished = true; state.endTime = Date.now();
+    clearInterval(timerInterval); endGame(false);
   }
   saveState();
 };
@@ -140,37 +107,21 @@ function saveState() { localStorage.setItem(storageKey, JSON.stringify(state)); 
 function renderRow(guess) {
   const row = document.createElement("div");
   row.className = "row";
-  
   const getComparisonData = (arr1, arr2) => {
     const normalize = (s) => s.toLowerCase().trim();
     const nArr2 = arr2.map(normalize);
     const matches = arr1.filter(i => nArr2.includes(normalize(i)));
-    
-    if (matches.length === arr2.length && arr1.length === arr2.length) {
-      return { status: "success", count: 0 };
-    }
+    if (matches.length === arr2.length && arr1.length === arr2.length) return { status: "success", count: 0 };
     return { status: matches.length > 0 ? "partial" : "error", count: matches.length };
   };
-
   const symp = getComparisonData(guess.symptoms, answer.symptoms);
   const book = getComparisonData(guess.booklets, answer.booklets);
-
   row.innerHTML = `
     <div class="cell" data-label="Diagnóstico" style="border:1px solid #45b1c2">${guess.name}</div>
-    <div class="cell ${symp.status}" data-label="Sintomas">
-      ${guess.symptoms.join(", ")}
-      ${symp.count > 0 ? `<span class="match-count">${symp.count}</span>` : ''}
-    </div>
-    <div class="cell ${guess.group === answer.group ? 'success' : 'error'}" data-label="Grupo de Risco">
-      ${guess.group}
-    </div>
-    <div class="cell ${guess.area === answer.area ? 'success' : 'error'}" data-label="Área">
-      ${guess.area}
-    </div>
-    <div class="cell ${book.status}" data-label="Apostilas">
-      ${guess.booklets.join(", ")}
-      ${book.count > 0 ? `<span class="match-count">${book.count}</span>` : ''}
-    </div>
+    <div class="cell ${symp.status}" data-label="Sintomas">${guess.symptoms.join(", ")}${symp.count > 0 ? `<span class="match-count">${symp.count}</span>` : ''}</div>
+    <div class="cell ${guess.group === answer.group ? 'success' : 'error'}" data-label="Grupo de Risco">${guess.group}</div>
+    <div class="cell ${guess.area === answer.area ? 'success' : 'error'}" data-label="Área">${guess.area}</div>
+    <div class="cell ${book.status}" data-label="Apostilas">${guess.booklets.join(", ")}${book.count > 0 ? `<span class="match-count">${book.count}</span>` : ''}</div>
   `;
   rowsContainer.appendChild(row);
   row.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -178,33 +129,21 @@ function renderRow(guess) {
 
 function endGame(won) {
   resultContainer.classList.remove("hidden");
-  input.disabled = true;
-  guessBtn.disabled = true;
-
-  const durationText = state.startTime && state.endTime 
-    ? formatDuration(state.endTime - state.startTime) 
-    : timerSpan.textContent;
-
-  const statsHtml = `
-    <div class="stats-container">
-      <div class="stat-item"><strong>Tentativas:</strong> ${state.guesses.length}/${maxAttempts}</div>
-      <div class="stat-item"><strong>Tempo:</strong> ${durationText}</div>
-    </div>
-  `;
-
+  input.disabled = true; guessBtn.disabled = true;
+  const durationText = timerSpan.textContent;
   const commonContent = `
-    ${statsHtml}
+    <div style="display: flex; gap: 20px; margin-bottom: 10px; font-size: 1.1rem;">
+      <div style="background: rgba(69, 177, 194, 0.1); padding: 8px 15px; border-radius: 5px; border: 1px solid var(--accent);"><strong>Tentativas:</strong> ${state.guesses.length}/${maxAttempts}</div>
+      <div style="background: rgba(69, 177, 194, 0.1); padding: 8px 15px; border-radius: 5px; border: 1px solid var(--accent);"><strong>Tempo:</strong> ${durationText}</div>
+    </div>
     <span class="answer-highlight" style="color: ${won ? 'var(--success)' : 'var(--error)'}">${answer.name}</span>
     <hr style="border: 0; border-top: 1px solid #333; width: 100%; margin: 15px 0;">
     <p>${answer.summary}</p>
-    <button id="shareBtn" class="share-btn">COMPARTILHAR RESULTADO</button>
+    <button id="shareBtn" class="share-btn">Compartilhar Resultado</button>
   `;
-
   resultContainer.innerHTML = won ? `<h2>Parabéns!🎈</h2>${commonContent}` : `<h2>Fim de jogo 😔</h2>${commonContent}`;
-
   document.getElementById("shareBtn").onclick = () => {
-    const text = `Joguei MEDGRUPOrdle (${new Date(currentSelectedDate).toLocaleDateString('pt-BR')})\nResultado: ${state.guesses.length}/${maxAttempts}\nTempo: ${durationText}\nDiagnóstico: ${answer.name}`;
-    navigator.clipboard.writeText(text);
-    alert("Resultado copiado!");
+    const text = `MEDordle (${new Date(currentSelectedDate).toLocaleDateString('pt-BR')})\nResultado: ${state.guesses.length}/${maxAttempts}\nTempo: ${durationText}\nDiagnóstico: ${answer.name}`;
+    navigator.clipboard.writeText(text); alert("Resultado copiado!");
   };
 }
