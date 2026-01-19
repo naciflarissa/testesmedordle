@@ -10,7 +10,6 @@
 
 * { box-sizing: border-box; font-family: "Courier New", monospace; }
 
-/* Ajustado para alinhar tudo no topo, não no centro */
 body { 
   margin: 0; 
   background: var(--bg-main); 
@@ -36,9 +35,10 @@ body {
     align-items: center;
     gap: 8px;
     transition: 0.2s;
+    line-height: 1.2;
 }
 .back-link:hover { background: var(--accent); color: var(--bg-main); }
-.back-link .arrow { font-size: 1rem; }
+.back-link .arrow { font-size: 1rem; display: inline-block; margin-top: -1px; }
 
 .app { 
   width: 95%; 
@@ -48,9 +48,7 @@ body {
   text-align: center; 
 }
 
-/* HEADER - REGRAS DE [2026-01-19] */
 header { margin-top: 40px; }
-
 .main-title { 
     color: var(--accent); 
     font-size: 2.8rem; 
@@ -58,15 +56,9 @@ header { margin-top: 40px; }
     margin-bottom: 20px; 
     margin-top: 0;
 }
-
-.main-subtitle { 
-    font-size: 1.1rem; 
-    opacity: 0.9; 
-    margin-bottom: 20px; 
-}
+.main-subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 20px; }
 
 .date-selector { margin-bottom: 20px; }
-
 .date-selector select {
     background: var(--bg-secondary);
     color: var(--accent);
@@ -78,7 +70,6 @@ header { margin-top: 40px; }
     font-weight: bold;
 }
 
-/* INPUT AREA - Altura padronizada em 56px */
 .input-area {
   display: flex;
   gap: 15px;
@@ -89,7 +80,6 @@ header { margin-top: 40px; }
 }
 
 .input-wrapper { position: relative; width: 450px; max-width: 100%; }
-
 input {
   width: 100%;
   padding: 15px;
@@ -116,7 +106,6 @@ input {
 #guessBtn:hover { opacity: 0.8; }
 
 .game-stats-live { display: flex; gap: 15px; }
-
 .stat-box {
   background: var(--bg-secondary);
   border: 1px solid #333;
@@ -129,20 +118,11 @@ input {
   height: 56px;
   justify-content: center;
 }
-
 .stat-box.accent-border { border-color: var(--accent); }
-
-.stat-box small {
-  font-size: 0.6rem;
-  color: var(--accent);
-  margin-bottom: 2px;
-  font-weight: bold;
-}
-
+.stat-box small { font-size: 0.6rem; color: var(--accent); margin-bottom: 2px; font-weight: bold; }
 .counter { font-weight: bold; font-size: 1.1rem; }
 .timer-highlight { color: var(--accent); }
 
-/* AUTOCOMPLETE */
 .autocomplete {
   position: absolute;
   top: 100%;
@@ -159,12 +139,10 @@ input {
 
 .hidden { display: none !important; }
 
-/* TABELA E RESULTADOS */
 .legend { display: flex; justify-content: center; gap: 30px; margin-bottom: 35px; }
 .legend .box { width: 16px; height: 16px; display: inline-block; margin-right: 8px; border-radius: 2px; }
 
 .row { display: grid; grid-template-columns: 1.2fr 2.5fr 1fr 1.3fr 1.5fr; gap: 15px; margin-bottom: 15px; }
-
 .row.header .cell {
   background: transparent;
   color: var(--accent);
@@ -184,6 +162,16 @@ input {
   text-align: center;
   border-radius: 10px;
   position: relative;
+}
+
+/* AJUSTE DO INDICADOR PARCIAL */
+.match-count {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  opacity: 0.7;
 }
 
 .success { background: var(--success); color: #000; font-weight: bold; }
